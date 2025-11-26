@@ -3,7 +3,7 @@
 <?php $__env->startSection('content'); ?>
 <div class="min-h-screen bg-[#09090b] text-zinc-300 font-sans selection:bg-rose-500/30">
     
-    <!-- Navbar / Header do Dashboard -->
+    <!-- Navbar -->
     <div class="border-b border-white/5 bg-[#09090b]/80 backdrop-blur-md sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <h1 class="text-lg font-bold text-white flex items-center gap-2">
@@ -21,10 +21,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- COLUNA PRINCIPAL (Feed e Listas) -->
+            <!-- COLUNA PRINCIPAL -->
             <div class="lg:col-span-8 space-y-10">
                 
-                <!-- Card de Boas Vindas -->
+                <!-- Header Usuário -->
                 <div class="flex items-center gap-4 pb-6 border-b border-white/5">
                     <div class="relative">
                         <?php if($user->profile_picture): ?>
@@ -43,7 +43,7 @@
                     </div>
                 </div>
 
-                <!-- Feed de Reviews dos Amigos -->
+                <!-- Feed de Reviews -->
                 <div class="space-y-6">
                     <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-4">
                         Reviews Recentes dos Amigos
@@ -112,6 +112,7 @@
                                                 <?php endif; ?>
                                                 
                                                 <div class="mt-4 flex gap-4 border-t border-white/5 pt-3">
+                                                    <!-- Botão de Curtir Fictício para layout -->
                                                     <button class="text-xs text-zinc-500 hover:text-rose-400 flex items-center gap-1 transition-colors">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                                                         Curtir
@@ -128,12 +129,15 @@
                                                         $poster = $review->game->background_image;
                                                         $link = route('games.show', $review->game->id);
                                                     } elseif ($review->movie) {
-                                                        // CORREÇÃO: Lógica para poster de filme na review
                                                         $mPoster = $review->movie->poster_path;
-                                                        if ($mPoster && !str_starts_with($mPoster, 'http')) {
-                                                            $poster = 'https://image.tmdb.org/t/p/w200' . $mPoster;
-                                                        } else {
-                                                            $poster = $mPoster;
+                                                        // Verifica se existe poster
+                                                        if ($mPoster) {
+                                                            // Se NÃO começa com http, adiciona o prefixo do TMDB
+                                                            if (!str_starts_with($mPoster, 'http')) {
+                                                                $poster = 'https://image.tmdb.org/t/p/w200' . $mPoster;
+                                                            } else {
+                                                                $poster = $mPoster;
+                                                            }
                                                         }
                                                         $link = route('filmes.show', $review->movie->id);
                                                     }
@@ -142,8 +146,8 @@
                                                 <?php if($poster): ?>
                                                     <a href="<?php echo e($link); ?>">
                                                         <img src="<?php echo e($poster); ?>" 
-                                                             class="w-16 h-24 object-cover rounded-md shadow-lg border border-zinc-800 hover:border-zinc-500 transition-colors"
-                                                             onerror="this.style.display='none'">
+                                                             class="w-16 h-24 object-cover rounded-md shadow-lg border border-zinc-800 hover:border-zinc-500 transition-colors bg-zinc-800"
+                                                             onerror="this.onerror=null;this.src='https://placehold.co/200x300/27272a/52525b?text=N/A';">
                                                     </a>
                                                 <?php endif; ?>
                                             </div>
@@ -176,7 +180,6 @@
                                 <?php $__currentLoopData = $list->items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <?php
                                         $itemPoster = $item->poster_path;
-                                        // CORREÇÃO: Lógica para poster de filme na lista
                                         if ($item->media_type === 'movie' && $itemPoster && !str_starts_with($itemPoster, 'http')) {
                                             $itemPoster = 'https://image.tmdb.org/t/p/w200' . $itemPoster;
                                         }
@@ -186,7 +189,7 @@
                                         <img src="<?php echo e($itemPoster); ?>" 
                                             class="h-full w-8 object-cover rounded-sm bg-zinc-800" 
                                             alt="<?php echo e($item->title); ?>"
-                                            onerror="this.style.display='none'">
+                                            onerror="this.onerror=null;this.src='https://placehold.co/200x300/27272a/52525b?text=+';">
                                     <?php endif; ?>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
