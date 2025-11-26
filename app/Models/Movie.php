@@ -55,4 +55,10 @@ class Movie extends Model
     {
         return $this->hasMany(Review::class, 'movie_id');
     }
+
+    public function getPosterPathAttribute()
+    {
+        return $this->poster;
+    }
+
 }

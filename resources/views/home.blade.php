@@ -5,7 +5,6 @@
 @section('content')
 <div class="min-h-screen bg-[#09090b] text-zinc-300 font-sans selection:bg-rose-500/30">
     
-    <!-- Navbar -->
     <div class="border-b border-white/5 bg-[#09090b]/80 backdrop-blur-md sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <h1 class="text-lg font-bold text-white flex items-center gap-2">
@@ -23,10 +22,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- COLUNA PRINCIPAL -->
             <div class="lg:col-span-8 space-y-10">
                 
-                <!-- Header Usuário -->
                 <div class="flex items-center gap-4 pb-6 border-b border-white/5">
                     <div class="relative">
                         @if($user->profile_picture)
@@ -44,10 +41,9 @@
                     </div>
                 </div>
 
-                <!-- Feed de Reviews -->
                 <div class="space-y-6">
                     <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-4">
-                        Reviews Recentes dos Amigos
+                        reviews que podem te interessar
                     </h3>
 
                     @if($friendsReviews->isEmpty())
@@ -64,7 +60,7 @@
                                 <div class="flex gap-4">
                                     <a href="{{ route('profile.show', $review->user->arroba) }}" class="flex-shrink-0">
                                         @if($review->user->profile_picture)
-                                            <img src="{{ asset('storage/' . $review->user->profile_picture) }}" class="w-10 h-10 rounded-full object-cover ring-2 ring-transparent group-hover:ring-rose-500/50 transition-all">
+                                            <img src="{{ asset('storage/' . $review->user->profile_picture) }}" class="w-10 h-10 rounded-full object-cover ring-2 ring-transparent">
                                         @else
                                             <div class="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-xs text-white font-bold">
                                                 {{ substr($review->user->name, 0, 1) }}
@@ -111,7 +107,6 @@
                                                 @endif
                                                 
                                                 <div class="mt-4 flex gap-4 border-t border-white/5 pt-3">
-                                                    <!-- Botão de Curtir Fictício para layout -->
                                                     <button class="text-xs text-zinc-500 hover:text-rose-400 flex items-center gap-1 transition-colors">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                                                         Curtir
@@ -128,10 +123,8 @@
                                                         $poster = $review->game->background_image;
                                                         $link = route('games.show', $review->game->id);
                                                     } elseif ($review->movie) {
-                                                        $mPoster = $review->movie->poster_path;
-                                                        // Verifica se existe poster
+                                                        $mPoster = $review->movie->poster;
                                                         if ($mPoster) {
-                                                            // Se NÃO começa com http, adiciona o prefixo do TMDB
                                                             if (!str_starts_with($mPoster, 'http')) {
                                                                 $poster = 'https://image.tmdb.org/t/p/w200' . $mPoster;
                                                             } else {
@@ -155,10 +148,50 @@
                                 </div>
                             </div>
                         @endforeach
+
+                        @if($friendsReviews->hasPages())
+                            <div class="mt-8 flex justify-center">
+                                <div class="flex items-center gap-2">
+                                    @if ($friendsReviews->onFirstPage())
+                                        <span class="px-4 py-2 text-sm font-medium text-zinc-600 bg-zinc-900 border border-zinc-800 rounded-lg cursor-not-allowed">
+                                            Anterior
+                                        </span>
+                                    @else
+                                        <a href="{{ $friendsReviews->previousPageUrl() }}" class="px-4 py-2 text-sm font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 rounded-lg hover:bg-zinc-800 hover:border-zinc-700 transition-all">
+                                            Anterior
+                                        </a>
+                                    @endif
+
+                                    <div class="flex items-center gap-1">
+                                        @foreach(range(1, $friendsReviews->lastPage()) as $page)
+                                            @if($page == $friendsReviews->currentPage())
+                                                <span class="px-3 py-2 text-sm font-bold text-white bg-rose-600 border border-rose-500 rounded-lg">
+                                                    {{ $page }}
+                                                </span>
+                                            @else
+                                                <a href="{{ $friendsReviews->url($page) }}" class="px-3 py-2 text-sm font-medium text-zinc-400 bg-zinc-900 border border-zinc-800 rounded-lg hover:bg-zinc-800 hover:text-white transition-all">
+                                                    {{ $page }}
+                                                </a>
+                                            @endif
+                                        @endforeach
+                                    </div>
+
+                                    {{-- Botão Próximo --}}
+                                    @if ($friendsReviews->hasMorePages())
+                                        <a href="{{ $friendsReviews->nextPageUrl() }}" class="px-4 py-2 text-sm font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 rounded-lg hover:bg-zinc-800 hover:border-zinc-700 transition-all">
+                                            Próximo
+                                        </a>
+                                    @else
+                                        <span class="px-4 py-2 text-sm font-medium text-zinc-600 bg-zinc-900 border border-zinc-800 rounded-lg cursor-not-allowed">
+                                            Próximo
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
                     @endif
                 </div>
 
-                <!-- Listas da Comunidade -->
                 <div class="pt-6">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-wider">
@@ -201,7 +234,6 @@
                 </div>
             </div>
 
-            <!-- COLUNA LATERAL -->
             <div class="lg:col-span-4 space-y-8">
                 
                 <div class="bg-[#101012] border border-white/5 rounded-xl p-5">

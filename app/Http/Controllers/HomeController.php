@@ -13,25 +13,19 @@ class HomeController extends Controller
     {
         $user = Auth::user();
 
-        // 1. Minhas Listas (Resumo lateral)
         $myLists = ListModel::where('user_id', $user->id)
             ->withCount('items')
             ->latest()
             ->take(4)
             ->get();
 
-        // 2. Reviews dos Amigos (Activity Feed)
-        // CORREÇÃO: Usar o nome correto da tabela ou apenas 'id'
-        // Assumindo que seu relacionamento following() está correto no model User
         $followingIds = $user->following()->pluck('table_users.id'); 
 
         $friendsReviews = Review::whereIn('user_id', $followingIds)
-            ->with(['user', 'game', 'movie']) // Carrega User, Game e Movie
-            ->latest()
-            ->take(10)
-            ->get();
+        ->with(['user', 'game', 'movie'])
+        ->latest()
+        ->paginate(4); 
 
-        // 3. Listas da Comunidade
         $communityLists = ListModel::where('user_id', '!=', $user->id)
             ->with(['user', 'items' => function($query) {
                 $query->take(3);
