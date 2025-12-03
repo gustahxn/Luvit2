@@ -1,4 +1,4 @@
-<p align="center"> <a href="#" target="_blank"> </a> </p> <p align="center"> <b>Luvit</b> — Conectando pessoas por meio de jogos, filmes e paixões em comum. Laravel, React, MySQL. </p>
+<p align="center"> <a href="#" target="_blank"> </a> </p> <p align="center"> <b>Luvit</b> — Conectando pessoas por meio de jogos, filmes e paixões em comum, uma comundade aberto para todos. Laravel, React, MySQL. </p>
 
 ## Conectar server por ssh ao pc
 ssh-keygen -t rsa b 4096 -C "guenrik2007@gmail.com"
